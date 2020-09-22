@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+	<!-- Root Context: defines shared resources visible to all other web components -->
+		
+	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
+		<property name="url" value="jdbc:oracle:thin:@spring.c5mw9almbigu.ap-northeast-2.rds.amazonaws.com:1521:spring"></property>
+		<property name="username" value="a45hvn"></property>
+		<property name="password" value="20200920"></property>
+	</bean>
+	
+	<bean id="log4j" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
+		<constructor-arg ref="datasource"></constructor-arg>
+		<property name="logFormatter">
+			<bean class="net.sf.log4jdbc.tools.Log4JdbcCustomFormatter">
+				<property name="loggingType" value="MULTI_LINE"></property>
+				<property name="sqlPrefix" value="[SQL]"></property>
+			</bean>
+		</property>	
+	</bean>
+	
+	<bean id="sessionfactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="log4j"></property> <!-- 의존 주입 -->
+		<property name="mapperLocations" value="classpath*:com/test/spring/mapper/*.xml"></property>
+		<property name="configLocation" value="/WEB-INF/mybatis.xml"></property>
+	</bean>
+	
+
+	<bean class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sessionfactory"></constructor-arg>
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- 파일 업로드 크기 제한(바이트) 100MB -->
+		<property name="maxUploadSize" value="104857600"></property>
+	</bean>
+</beans>
