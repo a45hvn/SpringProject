@@ -15,13 +15,30 @@
 	
 		<div id="headLine">
 			<span>축구 전략</span>
-			<select id="formation">
-				<optgroup label="전술">
-					<c:forEach items="" var="">
-						<option value=""></option>
-					</c:forEach>
-				</optgroup>
-			</select>
+			
+			<div id="formationBox">
+			
+				<select class="formation" id="stNum">
+					<optgroup label="공격수">
+						<c:forEach var="i" begin="1" end="10">
+							<option value="${i }">${i }</option>
+						</c:forEach>
+					</optgroup>
+				</select>
+				<select class="formation" id="mfNum">
+					<optgroup label="미드필더">
+						
+					</optgroup>
+				</select>
+				<select class="formation" id="dfNum" disabled>
+					<optgroup label="수비수">
+						
+					</optgroup>
+				</select>
+				
+				
+			</div>
+			
 		</div>
 		
 		<div id="gameBoard">
@@ -46,13 +63,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="" var="">
+					
 					<tr>
 						<td></td>
 						<td></td>
 						<td></td>
 					</tr>
-					</c:forEach>
+					
 				</tbody>
 			</table>
 		</div>
@@ -63,5 +80,7 @@
 	</div>
 </div>
 <script>
-
+	$("#stNum").on("change",function(){
+		alert(this.value())
+	})
 </script>

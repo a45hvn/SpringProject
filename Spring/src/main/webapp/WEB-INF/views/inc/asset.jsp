@@ -4,3 +4,4 @@
 <link rel="stylesheet" href="/spring/resources/css/bootstrap.css">
 <link rel="stylesheet" href="/spring/resources/css/main.css">
 <script src="/spring/resources/js/bootstrap.js"></script>
+<script src="/spring/resources/js/jquery-1.12.4.js"></script>
