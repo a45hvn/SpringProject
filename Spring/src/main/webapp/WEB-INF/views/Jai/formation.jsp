@@ -7,11 +7,19 @@
 	#rightSideBox{
 		border:10px solid yellow;
 	}
+	.box{
+		float:left;
+	}
+	.content::after{
+		content:"";
+		display:inline-box;
+		clear: both;
+	}
 </Style>
 <!-- formation -->
 <div class="content">
 	<!-- left ->#headLine, #gameBoard -->
-	<div id="leftSideBox">
+	<div id="leftSideBox" class="box">
 	
 		<div id="headLine">
 			<span>축구 전략</span>
@@ -20,12 +28,12 @@
 			
 				<select class="formation" id="stNum">
 					<optgroup label="공격수">
-						<c:forEach var="i" begin="1" end="10">
+						<c:forEach var="i" begin="0" end="10">
 							<option value="${i }">${i }</option>
 						</c:forEach>
 					</optgroup>
 				</select>
-				<select class="formation" id="mfNum">
+				<select class="formation" id="mfNum" disabled>
 					<optgroup label="미드필더">
 						
 					</optgroup>
@@ -35,7 +43,6 @@
 						
 					</optgroup>
 				</select>
-				
 				
 			</div>
 			
@@ -51,7 +58,7 @@
 	</div>
 	
 	<!-- right .tableOuter-->
-	<div id="rightSideBox">
+	<div id="rightSideBox" class="box">
 	
 		<div id="tableOuter" class="innerRight">
 			<table class="table table-hover" id="entry">
@@ -80,7 +87,27 @@
 	</div>
 </div>
 <script>
+var stNum=0;
+var mfNum=0;
 	$("#stNum").on("change",function(){
-		alert(this.value())
-	})
+		stNum=$(this).val();
+		var temp="";
+		for(var i=0;i<10-stNum+1;i++){
+			temp+="<option value='"+i+"'>"+i+"</option>";
+		}
+		
+		$("#mfNum").html("");
+		$("#mfNum").append(temp);
+		$("#mfNum").prop("disabled",false);
+	});
+	$("#mfNum").on("change",function(){
+		mfNum=$(this).val();
+		var temp="";
+		for(var i=0;i<10-stNum-mfNum+1;i++){
+			temp+="<option value='"+i+"'>"+i+"</option>";
+		}
+		$("#dfNum").html("");
+		$("#dfNum").append(temp);
+		$("#dfNum").prop("disabled",false);
+	});
 </script>
