@@ -16,7 +16,7 @@
 
 	<main>
 		<tiles:insertAttribute name="header"></tiles:insertAttribute>
-		<tiles:insertAttribute name="submenu"></tiles:insertAttribute>
+		<tiles:insertAttribute name="menu"></tiles:insertAttribute>
 		<tiles:insertAttribute name="content"></tiles:insertAttribute>
 		<tiles:insertAttribute name="footer"></tiles:insertAttribute>
 	</main>

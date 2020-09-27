@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+        <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    </head>
+    <body>
+        <style>
+            #leftSideBox {
+                border: 10px solid red;
+                width: 70%;
+            }
+            #rightSideBox {
+                border: 10px solid yellow;
+                width: 30%;
+            }
+            .box {
+                float: left;
+            }
+            .content::after {
+                content: "";
+                display: inline-box;
+                clear: both;
+            }
+            #gameBoard {
+                height: 570px;
+                border: 2px solid black;
+                background-image: url("../../../resources/images/field.png");
+                background-size: 520px 600px;
+                background-repeat: no-repeat;
+            }
+            .player {
+                border: 2px solid gold;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                font-size: 0.7rem;
+                vertical-align: center;
+                display: inline-block;
+            }
+        </style>
+        <!-- formation -->
+        <div class="content">
+            <!-- left ->#headLine, #gameBoard -->
+            <div id="leftSideBox" class="box">
+                <div id="headLine">
+                    <span>축구 전략</span>
+
+                    <div id="formationBox" style="display: inline-block">
+                        <select class="formation" id="stNum">
+                            <optgroup label="공격수">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                            </optgroup>
+                        </select>
+                        <select class="formation" id="mfNum" disabled>
+                            <optgroup label="미드필더"></optgroup>
+                        </select>
+                        <select class="formation" id="dfNum" disabled>
+                            <optgroup label="수비수"></optgroup>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="gameBoard">
+                    <div class="position" id="st">
+                        <div class="player" id="p1"></div>
+                    </div>
+                    <div class="position" id="mf"></div>
+                    <div class="position" id="df"></div>
+                    <div class="position" id="gk"></div>
+                </div>
+            </div>
+
+            <!-- right .tableOuter-->
+            <div id="rightSideBox" class="box">
+                <div id="tableOuter" class="innerRight">
+                    <table class="table table-hover" id="entry">
+                        <thead>
+                            <tr>
+                                <th>등번호</th>
+                                <th>이름</th>
+                                <th>포지션</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="commentOuter" class="innerRight"></div>
+            </div>
+        </div>
+        <script>
+            var stNum = 0;
+            var mfNum = 0;
+            $("#stNum").on("change", function () {
+                stNum = $(this).val();
+                var temp = "";
+                for (var i = 0; i < 10 - stNum + 1; i++) {
+                    temp += "<option value='" + i + "'>" + i + "</option>";
+                }
+
+                $("#mfNum").html("");
+                $("#mfNum").append(temp);
+                $("#mfNum").prop("disabled", false);
+
+                var player = "<div class='player'><div>";
+                console.log(player);
+                $("#st").append("<div class='player'><div>");
+            });
+            $("#mfNum").on("change", function () {
+                mfNum = $(this).val();
+                var temp = "";
+                for (var i = 0; i < 10 - stNum - mfNum + 1; i++) {
+                    temp += "<option value='" + i + "'>" + i + "</option>";
+                }
+                $("#dfNum").html("");
+                $("#dfNum").append(temp);
+                $("#dfNum").prop("disabled", false);
+            });
+            $(".player").on({
+                draggable: function () {
+                    var x = $(this).attr("class").split(" ")[0];
+
+                    console.log($(this).attr("id"));
+                },
+                mouseup: function () {
+                    console.log($(this).position());
+                },
+            });
+            $(document).on("click", ".player", function (e) {
+                console.log(e);
+                $(".player").draggable();
+            });
+        </script>
+    </body>
+</html>
