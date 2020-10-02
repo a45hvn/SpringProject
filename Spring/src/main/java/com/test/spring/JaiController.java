@@ -1,5 +1,8 @@
 package com.test.spring;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -24,10 +27,20 @@ public class JaiController {
 	}//Jai/test
 	
 	@RequestMapping(value = "/Jai/formation.action", method = (RequestMethod.GET))
-	public String formation(HttpServletRequest request, HttpServletResponse response) {
+	public String formation(HttpServletRequest request, HttpServletResponse response,String team_seq) {
+	
+	List<PlayerDTO> list=new ArrayList<PlayerDTO>(); 
+	list=dao.getPlayerInfo(team_seq);
 
-		
-
-		return "Jai/formation";
+	request.setAttribute("list", list);
+	return "Jai/formation";
 	}//Jai/formation
+	
+	@RequestMapping(value = "/Jai/comment.action", method = (RequestMethod.GET))
+	public void comment(HttpServletRequest request, HttpServletResponse response) {
+
+		int result=dao.updateComment();
+
+	
+	}//Jai/comment
 }//JaiController

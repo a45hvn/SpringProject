@@ -2,5 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sql">
-
+	
+	<select id="PlayerInfo" resultType="PlayerDTO" parameterType="String">
+	select
+		member.name name,
+		mt.backnumber backnumber,
+		mt.height height,
+		mt.weight weight,
+		team.seq team_seq, 
+		team.name teamname, 
+		member.image image, 
+		member.position position
+		
+	from tblformation formation
+	    inner join tblplayerentry playerentry on playerentry.seq=formation.playerentry_seq
+	        inner join tblmember_team mt on mt.seq=playerentry.member_team_seq
+	            inner join tbltransfer transfer on transfer.seq=mt.transfer_seq
+	                inner join tblteam team on team.seq=transfer.team_seq
+	                    inner join tblmember member on member.seq=transfer.member_seq
+	where team.seq=#{team_seq}
+	order by formation.seq
+	</select>
+	
 </mapper>
