@@ -5,6 +5,7 @@ import lombok.Data;
 @Data
 public class PlayerDTO {
 
+	private String seq;
 	private String name;
 	private String backnumber;
 	private String height;
@@ -13,7 +14,6 @@ public class PlayerDTO {
 	private String teamname;
 	private String image;
 	private String position;
-	
+	private String birth;
 
-	
 }//playerDTO

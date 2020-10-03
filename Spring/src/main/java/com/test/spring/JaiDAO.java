@@ -23,7 +23,7 @@ public class JaiDAO implements IJaiDAO {
 	@Override
 	public List<PlayerDTO> getPlayerInfo(String team_seq) {
 		// TODO Auto-generated method stub
-		
+	
 		return template.selectList("sql.PlayerInfo", team_seq);
 	}//getPlayerInfo
 }// DAO

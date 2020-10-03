@@ -91,7 +91,7 @@
 		</div>
 
 		<div id="formationSelector"
-			style="display: none; position: relative; top: 0px; left: 100px">
+			style="display: none; position: absolute; top: 108px; left: 245px">
 			<select class="formation" id="teamFormation">
 				<optgroup label="팀전략"></optgroup>
 			</select>
@@ -108,7 +108,7 @@
 	<!-- right .tableOuter-->
 	<div id="rightSideBox" class="box">
 		<div id="tableOuter" class="innerRight">
-			<table class="table table-hover" id="entry">
+			<table class="table table-hover" id="entry" style="font-size: 0.74em">
 				<thead>
 					<tr>
 						<th>등번호</th>
@@ -118,7 +118,7 @@
 				</thead>
 				<tbody>
 					<c:forEach items="${list }" var="list">
-						<tr>
+						<tr data-seq="${list.seq}" data-height="${list.height }" data-weight="${list.weight }" data-birth="${list.birth }" data-image="${list.image }">
 							<td>${list.backnumber}</td>
 							<td>${list.name }</td>
 							<td>${list.position }</td>
@@ -131,16 +131,16 @@
 		<div id="commentOuter" class="innerRight">
 			<table>
 				<tr>
-					<td><img src="" /></td>
+					<td id="playerImage"></td>
 				</tr>
 				<tr>
-					<td>이름 :</td>
+					<td>이름 : <span id="playerName"></span></td>
 				</tr>
 				<tr>
-					<td>생년월일 :</td>
+					<td>생년월일 : <span id="PlayerBirth"></span></td>
 				</tr>
 				<tr>
-					<td>키/몸무게 :</td>
+					<td>키/몸무게 : <span id="playerHeight"></span><span>/</span> <span id="playerWeight"></span> </td>
 				</tr>
 				<tr id="comment">
 					<td><textarea style="resize: none" disabled></textarea></td>
@@ -259,6 +259,7 @@
                     flag = true;
                 }
             });
+            
             //코멘트 클릭해서 내용 수정
             $("#comment").on("dblclick", function () {
                 $("#comment textarea").attr("disabled", false);
@@ -271,7 +272,7 @@
                         $("#comment textarea").attr("disabled", true);
                         $.ajax({
                             type: "post",
-                            url: "/spring/WEB-INf/views/Jai/comment.action",
+                            url: "/spring/Jai/commentok.action",
                             //data: {"text":text,"seq":seq} // 팀번호, 선수정보, 좌표값을 넘겨야 한다.....
                             contentType: "application/json",
                             dataType: "json",
@@ -285,6 +286,28 @@
                     }
                 });
             });
+            
+            //선수 명단을 클릭하면 코멘트가 나옴
             var player_seq = "";
-            $("#entry tbody tr").on("click", function () {});
+            $("#entry tbody tr").on("click", function () {
+            	$("#playerName").text($(this).find("td").eq(1).text());
+            	$("#PlayerBirth").text($(this).data('birth'));
+            	$("#playerHeight").text($(this).data('height'));
+            	$("#playerWeight").text($(this).data('weight'));
+            	$("#playerImage").html("<img src='/spring/resources/images/"+$(this).data('image')+"'/>");
+            	$.ajax({
+            		type:"get",
+            		url:"/spring/Jai/comment.action",
+            		data:{"seq":$(this).data('seq')},
+            		contentType:"application/json",
+            		dataType:"json",
+            	})
+            	.done(function(data,textStatus,xhr){
+            		
+	            	$("#comment textarea").val("");
+            	})
+            	.fail(function(data,textStatus,xhr){
+            		console.log(data,textStatus,xhr);
+            	})
+            });
         </script>

@@ -31,16 +31,21 @@ public class JaiController {
 	
 	List<PlayerDTO> list=new ArrayList<PlayerDTO>(); 
 	list=dao.getPlayerInfo(team_seq);
-
 	request.setAttribute("list", list);
 	return "Jai/formation";
 	}//Jai/formation
 	
 	@RequestMapping(value = "/Jai/comment.action", method = (RequestMethod.GET))
-	public void comment(HttpServletRequest request, HttpServletResponse response) {
+	public void comment(HttpServletRequest request, HttpServletResponse response,String seq) {
 
+		
 		int result=dao.updateComment();
-
-	
 	}//Jai/comment
+	@RequestMapping(value = "/Jai/commentok.action", method = (RequestMethod.POST))
+	public String commentok(HttpServletRequest request, HttpServletResponse response) {
+
+		
+
+		return "Jai/commentok";
+	}//Jai/commentok
 }//JaiController

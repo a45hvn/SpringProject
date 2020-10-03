@@ -4,7 +4,9 @@
 <mapper namespace="sql">
 	
 	<select id="PlayerInfo" resultType="PlayerDTO" parameterType="String">
-	select
+	select a.*,rownum rnum from
+	(select
+		member.seq seq,
 		member.name name,
 		mt.backnumber backnumber,
 		mt.height height,
@@ -12,7 +14,8 @@
 		team.seq team_seq, 
 		team.name teamname, 
 		member.image image, 
-		member.position position
+		member.position position,
+		to_char(member.birth,'yyyy-mm-dd') birth
 		
 	from tblformation formation
 	    inner join tblplayerentry playerentry on playerentry.seq=formation.playerentry_seq
@@ -21,7 +24,11 @@
 	                inner join tblteam team on team.seq=transfer.team_seq
 	                    inner join tblmember member on member.seq=transfer.member_seq
 	where team.seq=#{team_seq}
-	order by formation.seq
-	</select>
+	order by formation.seq) a
+	where rownum &lt; 19
 	
+	</select>
+	<select id="test" resultType="String" parameterType="String">
+	select name from tblmember where seq=#{zz}
+	</select>
 </mapper>
