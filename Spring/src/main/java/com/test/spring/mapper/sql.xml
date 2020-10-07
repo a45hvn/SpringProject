@@ -6,6 +6,7 @@
 	<select id="PlayerInfo" resultType="PlayerDTO" parameterType="String">
 	select a.*,rownum rnum from
 	(select
+		distinct
 		member.seq seq,
 		member.name name,
 		mt.backnumber backnumber,
@@ -24,11 +25,35 @@
 	                inner join tblteam team on team.seq=transfer.team_seq
 	                    inner join tblmember member on member.seq=transfer.member_seq
 	where team.seq=#{team_seq}
-	order by formation.seq) a
-	where rownum &lt; 19
+	) a
+	<!-- where rownum &lt; 19 -->
 	
 	</select>
-	<select id="test" resultType="String" parameterType="String">
-	select name from tblmember where seq=#{zz}
+
+	<select id="getPosition" resultType="String" parameterType="com.test.spring.FormationDTO">
+		select
+			distinct formation
+		from tblformation
+			where formation=#{strategy} and team_seq=#{team_seq}
 	</select>
+	
+	<insert id="insertPosition" parameterType="com.test.spring.FormationDTO">
+		insert into tblformation
+			(seq,formation,position_x,position_y,playerentry_seq,position_seq,team_seq)
+			values(
+			<!-- (select max(seq)+20 from tblformation), -->
+			seq.nextval,
+			#{strategy},
+			#{position_x},
+			#{position_y},
+			#{player},
+			(select seq from tblposition where position=upper(#{position})),
+			#{team_seq}
+		<!-- #{position} -->
+		)
+	</insert>
+	<delete id="deletePosition" parameterType="com.test.spring.FormationDTO">
+		delete from tblformation where team_seq=#{team_seq} and formation=#{strategy}
+	</delete>
+	
 </mapper>

@@ -39,10 +39,11 @@
 	width: 40px;
 	height: 40px;
 	border-radius: 50%;
-	font-size: 0.7rem;
+	font-size: 2rem;
 	vertical-align: center;
 	display: inline-block;
 	position: absolute;
+	text-align:center;
 }
 
 .position {
@@ -118,7 +119,7 @@
 				</thead>
 				<tbody>
 					<c:forEach items="${list }" var="list">
-						<tr data-seq="${list.seq}" data-height="${list.height }" data-weight="${list.weight }" data-birth="${list.birth }" data-image="${list.image }">
+						<tr data-seq="${list.seq}" data-height="${list.height }" data-weight="${list.weight }" data-birth="${list.birth }" data-image="${list.image }" data-backnumber="${list.backnumber }">
 							<td>${list.backnumber}</td>
 							<td>${list.name }</td>
 							<td>${list.position }</td>
@@ -167,8 +168,10 @@
                 //숫자 정하면 빈칸이 나옴
                 $("#st").html("");
                 for (var i = 0; i < stNum; i++) {
-                    $("#st").append("<div class='player' id='st" + i + "' style='left : " + i * 44 + "px';> <div>");
+                    $("#st").append("<div class='player' id='st" + i + "' data-seq= '0' style='left : " + i * 44 + "px';> <div>");
                 }
+                $("#mf").html("");
+                $("#df").html("");
             });
             // 미드필더 수 정하기
             $("#mfNum").on("change", function () {
@@ -185,19 +188,19 @@
                 //숫자 정하면 빈칸이 나옴
                 $("#mf").html("");
                 for (var i = 0; i < mfNum; i++) {
-                    $("#mf").append("<div class='player' id='mf" + i + "' style='left : " + i * 44 + "px';> <div>");
+                    $("#mf").append("<div class='player' id='mf" + i + "' data-seq='0' style='left : " + i * 44 + "px';> <div>");
                 }
                 //숫자 정하면 빈칸이 나옴
                 $("#df").html("");
                 for (var i = 0; i < dfNum; i++) {
-                    $("#df").append("<div class='player' id='df" + i + "' style='left : " + i * 44 + "px';> <div>");
+                    $("#df").append("<div class='player' id='df" + i + "' data-seq='0' style='left : " + i * 44 + "px';> <div>");
                 }
             });
             // 미드필더를 정하면 수비수가 계산되어 나온다. 그리고 배치버튼 선택 가능.
             $("#mfNum").on("change", function () {
                 $("#btnMove").val("배치시작");
                 $("#btnMove").prop("disabled", false);
-                $("#gk").append("<div class='player' id='gk0' style='left:76px'> <div>");
+                $("#gk").append("<div class='player'  id='gk0' data-seq='0' style='left:76px'> <div>");
             });
 
             //선수들 움직일 수 있게하는 메소드
@@ -206,8 +209,8 @@
                 $("#btnMove").removeClass('btn-info');
                 $("#btnMove").addClass('btn-warning');
                 $("#btnMove").text("저장하기");
+                //저장하기 버튼을 누르면 위치정보를 ajax로 보낸다
                 $("#btnMove").on("click", function () {
-                    var list = $(".player").eq(1).css("top");
                     var arr = new Array();
                     for (var i = 0; i < 11; i++) {
                         var identity = $(".player").eq(i).attr("id");
@@ -215,27 +218,21 @@
                         var left = $(".player").eq(i).css("left");
                         var position = identity.substr(0, 2);
                         var strategy = stNum + "" + mfNum + "" + dfNum + "";
-                        var player = $(".player").eq(i).attr("value");
-                        arr[i] = { strategy: strategy, position: position, top: top, left: left, identity: identity, player: player };
-                        console.log(strategy);
+                        var player = $(".player").eq(i).data("seq");
+						arr.push({ strategy: strategy, position: position, top: top, left: left, identity: identity, player: player });
+                        //arr[i] = [strategy,position,top,left,identity,player];
                     }
-
                     //ajax를 통해 현재 내용을 저장
                     console.log(arr);
-                    // $.ajax({
-                    //     type: "post",
-                    //     url: "/spring/WEB-INf/views/Jai/formationok.action",
-                    //     //data: {"arr":arr}, // 팀번호, 선수정보, 좌표값을 넘겨야 한다.....
-                    //     dataType: "json",
-                    // });
-                });
-            });
+                    console.log(JSON.stringify(arr));
+                     $.ajax({
+                         type: "post",
+                         url: "/spring/Jai/formationok.action",
+                         data: {"jsonArray":JSON.stringify(arr),"team_seq":${list.get(0).team_seq }},  //{"jsonData":arr}, // 팀번호, 선수정보, 좌표값을 넘겨야 한다.....
+                         dataType: "json"
+                     });
 
-            //움직인 선수의 위치 파악 -> ajax로 보낼 예정
-            $(".player").on({
-                mouseup: function () {
-                    console.log($(this).position());
-                },
+                });
             });
 
             //전략작성 토글
@@ -270,6 +267,7 @@
                         var text = $(this).val();
                         console.log(text);
                         $("#comment textarea").attr("disabled", true);
+                        
                         $.ajax({
                             type: "post",
                             url: "/spring/Jai/commentok.action",
@@ -289,12 +287,22 @@
             
             //선수 명단을 클릭하면 코멘트가 나옴
             var player_seq = "";
+            var player_seq = "";
+            var player_backnumber = "";
+            
+            
+            //선수 클릭하기 -> 우측에 선수 코멘트가 나온다.
             $("#entry tbody tr").on("click", function () {
             	$("#playerName").text($(this).find("td").eq(1).text());
             	$("#PlayerBirth").text($(this).data('birth'));
             	$("#playerHeight").text($(this).data('height'));
             	$("#playerWeight").text($(this).data('weight'));
-            	$("#playerImage").html("<img src='/spring/resources/images/"+$(this).data('image')+"'/>");
+            	//$("#playerImage").html("<img src='/spring/resources/images/"+$(this).data('image')+"'/>");
+            	image = $(this).data("image");
+                player_seq = $(this).data("seq");
+                player_backnumber = $(this).data("backnumber");
+                console.log(player_seq);
+                console.log(player_backnumber);
             	$.ajax({
             		type:"get",
             		url:"/spring/Jai/comment.action",
@@ -303,11 +311,41 @@
             		dataType:"json",
             	})
             	.done(function(data,textStatus,xhr){
-            		
+            		console.log(data);
 	            	$("#comment textarea").val("");
             	})
             	.fail(function(data,textStatus,xhr){
             		console.log(data,textStatus,xhr);
             	})
+            });
+            
+            //선수 더블클릭시 번호 선수등번호 입력됨
+            $(document).on("dblclick", ".player", function () {
+            	for(var i=0;i<11;i++){
+	            	if($(".player").eq(i).data("seq")==0 ||$(".player").eq(i).data("seq")==""){
+		                $(".player").eq(i).css({ border: "2px solid gold", "background-color": ""  });
+	            	}else{
+		                $(".player").eq(i).css({ border: "2px solid gold", "background-color": "gold"  });
+	            		
+	            	}
+            	}
+                $(this).css({
+                    border: "4px solid gold",
+                    "background-color": "gold",
+                });
+                
+                    //console.log(image);
+                    $(this).data("seq", player_seq);
+                    $(this).text(player_backnumber);
+                    
+                    player_seq="";
+                    player_backnumber="";
+                    
+                if($(this).css("background-color")==="rgb(255, 215, 0)"){
+                	$(document).on("click", ".player", function () {
+	                		$(this).css({"background-color":"","border":"2px solid gold"});
+	                		$(this).text("");
+                	});
+                }
             });
         </script>
