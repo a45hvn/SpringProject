@@ -2,5 +2,58 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="sql">
+	
+	<select id="PlayerInfo" resultType="PlayerDTO" parameterType="String">
+	select a.*,rownum rnum from
+	(select
+		distinct
+		member.seq seq,
+		member.name name,
+		mt.backnumber backnumber,
+		mt.height height,
+		mt.weight weight,
+		team.seq team_seq, 
+		team.name teamname, 
+		member.image image, 
+		member.position position,
+		to_char(member.birth,'yyyy-mm-dd') birth
+		
+	from tblformation formation
+	    inner join tblplayerentry playerentry on playerentry.seq=formation.playerentry_seq
+	        inner join tblmember_team mt on mt.seq=playerentry.member_team_seq
+	            inner join tbltransfer transfer on transfer.seq=mt.transfer_seq
+	                inner join tblteam team on team.seq=transfer.team_seq
+	                    inner join tblmember member on member.seq=transfer.member_seq
+	where team.seq=#{team_seq}
+	) a
+	<!-- where rownum &lt; 19 -->
+	
+	</select>
 
+	<select id="getPosition" resultType="String" parameterType="com.test.spring.FormationDTO">
+		select
+			distinct formation
+		from tblformation
+			where formation=#{strategy} and team_seq=#{team_seq}
+	</select>
+	
+	<insert id="insertPosition" parameterType="com.test.spring.FormationDTO">
+		insert into tblformation
+			(seq,formation,position_x,position_y,playerentry_seq,position_seq,team_seq)
+			values(
+			<!-- (select max(seq)+20 from tblformation), -->
+			seq.nextval,
+			#{strategy},
+			#{position_x},
+			#{position_y},
+			#{player},
+			(select seq from tblposition where position=upper(#{position})),
+			#{team_seq}
+		<!-- #{position} -->
+		)
+	</insert>
+	<delete id="deletePosition" parameterType="com.test.spring.FormationDTO">
+		delete from tblformation where team_seq=#{team_seq} and formation=#{strategy}
+	</delete>
+	
 </mapper>

@@ -7,9 +7,9 @@
 		
 	<bean id="datasource" class="org.apache.commons.dbcp.BasicDataSource">
 		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver"></property>
-		<property name="url" value="jdbc:oracle:thin:@spring.c5mw9almbigu.ap-northeast-2.rds.amazonaws.com:1521:spring"></property>
+		<property name="url" value="jdbc:oracle:thin:@webproject.c5mw9almbigu.ap-northeast-2.rds.amazonaws.com:1521:aa"></property>
 		<property name="username" value="a45hvn"></property>
-		<property name="password" value="20200920"></property>
+		<property name="password" value="20200804"></property>
 	</bean>
 	
 	<bean id="log4j" class="net.sf.log4jdbc.Log4jdbcProxyDataSource">
